@@ -10,3 +10,12 @@ class Product(Model):
 
     class Meta:
         database = db
+
+def add_csv_data():
+    """Gets CSV data and cleans it before inserting it into the database"""
+    pass
+
+if __name__ == '__main__':
+    db.connect()
+    db.create_tables([Product], safe=True)
+    # read csv data into table
