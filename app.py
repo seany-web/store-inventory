@@ -1,5 +1,7 @@
 from peewee import *
 
+import csvhandler
+
 db = SqliteDatabase('products.db')
 
 class Product(Model):
@@ -13,9 +15,11 @@ class Product(Model):
 
 def add_csv_data():
     """Gets CSV data and cleans it before inserting it into the database"""
-    pass
+    raw_data = csvhandler.read_csv()
+    for line in raw_data:
+        print(line)
 
 if __name__ == '__main__':
     db.connect()
     db.create_tables([Product], safe=True)
-    # read csv data into table
+    add_csv_data()
