@@ -21,10 +21,17 @@ def add_csv_data():
         Product.create(product_name=line['name'], product_price=line['price'],
         product_quantity=line['quantity'], date_updated=line['date_updated'])
 
-def get_product(id):
-    """Takes in an id and return product from database where ID matches"""
-    try:
-        product = Product.get(Product.product_id == id)
-        return product
-    except DoesNotExist:
-        return None
+def view_products(search_query=None):
+    """Gets all products from the database"""
+    products = Product.select()
+    if search_query:
+        try:
+            product = Product.get(Product.product_id == search_query)
+            return product
+        except DoesNotExist:
+            return None
+    return products
+
+def search_products():
+    """Search products for by ID"""
+    return view_products(input('Please enter an ID number: '))

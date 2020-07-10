@@ -3,6 +3,7 @@ import datetime
 import os
 
 import dbhandler
+import csvhandler
 
 def clear():
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -26,8 +27,7 @@ def menu_loop():
 
 def view_product():
     """Search for product by ID number"""
-    requested_id = input("Please enter the ID number you wish to search for: ")
-    returned_product = dbhandler.get_product(requested_id)
+    returned_product = dbhandler.search_products()
     if returned_product:
         name = returned_product.product_name
         price_as_str = str(returned_product.product_price)
@@ -46,11 +46,33 @@ def view_product():
 
 def add_product():
     """Add a new product to the database"""
-    pass
+    name = input("Please enter the product name: ")
+    clear()
+    price = input("Please enter the price: $")
+    formatted_price = int("".join(price.split('.')))
+    clear()
+    quantity = int(input("Please enter the quantity: "))
+    clear()
+    date = datetime.datetime.now().strftime('%Y-%m-%d')
+    dbhandler.Product.create(product_name = name, product_price = formatted_price,
+    product_quantity = quantity, date_updated = date)
+
 
 def backup_database():
     """Backup the database"""
-    pass
+    all_products = dbhandler.view_products()
+    product_dictionaries = []
+    for item in all_products:
+        price_as_str = str(item.product_price)
+        formatted_price = '${}.{}'.format(price_as_str[0], price_as_str[1::])
+        product = {
+            'name': item.product_name,
+            'price': formatted_price,
+            'quantity': str(item.product_quantity),
+            'date_updated': datetime.datetime.strftime(item.date_updated, "%d/%m/%Y")
+        }
+        product_dictionaries.append(product)
+    csvhandler.write_csv(product_dictionaries)
 
 menu = OrderedDict([
     ('v', view_product),
