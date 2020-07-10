@@ -1,9 +1,9 @@
 from collections import OrderedDict
 import os
 
+
 def clear():
     os.system('cls' if os.name == 'nt' else 'clear')
-
 
 def menu_loop():
     """Shows the menu to the user"""
