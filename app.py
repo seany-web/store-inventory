@@ -5,10 +5,11 @@ import csvhandler
 db = SqliteDatabase('products.db')
 
 class Product(Model):
-    product_id = AutoField()
-    product_quantity = IntegerField(default=0)
+    product_id = AutoField(primary_key=True)
+    product_name = CharField()
     product_price = IntegerField()
-    date_updated = DateTimeField()
+    product_quantity = IntegerField(default=0)
+    date_updated = DateField()
 
     class Meta:
         database = db
@@ -17,7 +18,9 @@ def add_csv_data():
     """Gets CSV data and cleans it before inserting it into the database"""
     raw_data = csvhandler.read_csv()
     for line in raw_data:
-        print(line)
+        Product.create(product_name=line['name'], product_price=line['price'],
+        product_quantity=line['quantity'], date_updated=line['date_updated'])
+        
 
 if __name__ == '__main__':
     db.connect()
