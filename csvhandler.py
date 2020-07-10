@@ -3,6 +3,7 @@ from datetime import datetime
 
 import dbhandler
 
+
 def read_csv():
     """reads data from csv file and calls method to add to the database"""
     with open("inventory.csv", newline='') as csvfile:
@@ -12,9 +13,11 @@ def read_csv():
             name = row[0]
             price = int("".join(row[1].strip('$').split('.')))
             quantity = int(row[2])
-            date_updated = datetime.strptime(row[3], '%m/%d/%Y').strftime('%Y-%m-%d')
+            date_updated = datetime.strptime(
+                row[3], '%m/%d/%Y'
+                ).strftime('%Y-%m-%d')
             dbhandler.add_product(name, price, quantity, date_updated)
-        
+
 
 def write_csv(products):
     """writes data to csv file"""
@@ -22,7 +25,7 @@ def write_csv(products):
         fieldnames = ['product_name', 'price', 'quantity', 'date_updated']
         productwriter = csv.DictWriter(backup, fieldnames=fieldnames)
         productwriter.writeheader()
-        
+
         for product in products:
             productwriter.writerow({
                 'product_name': product['name'],
@@ -30,6 +33,3 @@ def write_csv(products):
                 'quantity': product['quantity'],
                 'date_updated': product['date_updated']
             })
-
-
-            

@@ -6,9 +6,10 @@ import menu
 
 db = SqliteDatabase('inventory.db')
 
+
 class Product(Model):
     product_id = AutoField(primary_key=True)
-    product_name = CharField()
+    product_name = CharField(unique=True)
     product_price = IntegerField()
     product_quantity = IntegerField(default=0)
     date_updated = DateField()
@@ -16,17 +17,31 @@ class Product(Model):
     class Meta:
         database = db
 
-def add_product(product_name, product_price, product_quantity, date_updated):
+
+def add_product(name, price, quantity, last_updated):
     """Adds a new product to the database"""
-    Product.create(
-        product_name = product_name,
-        product_price = product_price,
-        product_quantity = product_quantity,
-        date_updated = date_updated
-    )
+    try:
+        Product.create(
+            product_name=name,
+            product_price=price,
+            product_quantity=quantity,
+            date_updated=last_updated
+        )
+    except IntegrityError:
+        product_record = Product.get(Product.product_name == name)
+        last_updated_date_obj = datetime.datetime.strptime(
+            last_updated, '%Y-%m-%d'
+        ).date()
+        if last_updated_date_obj > product_record.date_updated:
+            product_record.product_price = price
+            product_record.product_quantity = quantity
+            product_record.date_updated = last_updated
+            product_record.save()
+
 
 def backup_database():
-    """Gets all products from database and converts fields to strings for CSV writing"""
+    """Gets all products from database and
+    converts fields to strings for CSV writing"""
     all_records = Product.select()
     records_backup = []
     for record in all_records:
@@ -47,5 +62,7 @@ def search_products(search_query):
         product = Product.get(Product.product_id == search_query)
         menu.display_product(product)
     except DoesNotExist:
-        print('Product ID#{} does not exist in the database'.format(search_query))
-        input('Press enter to return to the main menu')
+        print("Product ID# '{}' does not exist in the database".format(
+            search_query
+        ))
+        menu.return_to_menu()
