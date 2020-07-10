@@ -25,54 +25,37 @@ def menu_loop():
         elif choice != 'q':
             input('Input is not valid, press return to try again.')
 
+
 def view_product():
-    """Search for product by ID number"""
-    returned_product = dbhandler.search_products()
-    if returned_product:
-        name = returned_product.product_name
-        price_as_str = str(returned_product.product_price)
-        formatted_price = '${}.{}'.format(price_as_str[0], price_as_str[1::])
-        quantity = returned_product.product_quantity
-        date = returned_product.date_updated
-        date_as_string = datetime.datetime.strftime(date, "%d/%m/%Y")
-        print('Product Name: {}\n'.format(name))
-        print('Price: {}\n'.format(formatted_price))
-        print('Quantity: {}\n'.format(quantity))
-        print('Date Updated: {}'.format(date_as_string))
-        input()
-    else:
-        input("No match found for that requested ID. Press enter to return to the main menu")
+    """View a single product's inventory"""
+    dbhandler.search_products(input("Enter an ID number: "))
     
 
 def add_product():
     """Add a new product to the database"""
     name = input("Please enter the product name: ")
-    clear()
+    quantity = int(input("Please enter the quantity: "))
     price = input("Please enter the price: $")
     formatted_price = int("".join(price.split('.')))
-    clear()
-    quantity = int(input("Please enter the quantity: "))
-    clear()
     date = datetime.datetime.now().strftime('%Y-%m-%d')
-    dbhandler.Product.create(product_name = name, product_price = formatted_price,
-    product_quantity = quantity, date_updated = date)
+    dbhandler.add_product(name, formatted_price, quantity, date)
+
+
+def display_product(product):
+    """Displays product(s) to the user"""
+    price_as_str = str(product.product_price)
+    print('Product Name: {}'.format(product.product_name))
+    print('Price: ${}.{}'.format(price_as_str[0], price_as_str[1::]))
+    print('Quantity: {}'.format(int(product.product_quantity)))
+    print('Date Updated: {}'.format(datetime.datetime.strftime(
+        product.date_updated, '%d/%m/%Y'
+        )))
+    input('Press enter to return to the main menu')
 
 
 def backup_database():
-    """Backup the database"""
-    all_products = dbhandler.view_products()
-    product_dictionaries = []
-    for item in all_products:
-        price_as_str = str(item.product_price)
-        formatted_price = '${}.{}'.format(price_as_str[0], price_as_str[1::])
-        product = {
-            'name': item.product_name,
-            'price': formatted_price,
-            'quantity': str(item.product_quantity),
-            'date_updated': datetime.datetime.strftime(item.date_updated, "%d/%m/%Y")
-        }
-        product_dictionaries.append(product)
-    csvhandler.write_csv(product_dictionaries)
+    """Make a backup of the entire inventory"""
+    dbhandler.backup_database()
 
 menu = OrderedDict([
     ('v', view_product),

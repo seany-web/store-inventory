@@ -1,3 +1,4 @@
+import csvhandler
 import dbhandler
 import menu
 
@@ -5,5 +6,5 @@ import menu
 if __name__ == '__main__':
     dbhandler.db.connect()
     dbhandler.db.create_tables([dbhandler.Product], safe=True)
-    dbhandler.add_csv_data()
+    csvhandler.read_csv()
     menu.menu_loop()

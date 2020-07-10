@@ -1,22 +1,20 @@
 import csv
 from datetime import datetime
 
+import dbhandler
+
 def read_csv():
-    """reads data from csv file"""
+    """reads data from csv file and calls method to add to the database"""
     with open("inventory.csv", newline='') as csvfile:
         inventory_reader = csv.reader(csvfile, delimiter=',')
         rows = list(inventory_reader)[1::]
-        products = []
         for row in rows:
-            product = {}
-            product['name'] = row[0]
-            product['price'] = int("".join(row[1].strip('$').split('.')))
-            product['quantity'] = int(row[2])
-            date_time_str = row[3]
-            date_time_obj = datetime.strptime(date_time_str, '%m/%d/%Y')
-            product['date_updated'] = datetime.strftime(date_time_obj, '%Y-%m-%d')
-            products.append(product)
-        return products
+            name = row[0]
+            price = int("".join(row[1].strip('$').split('.')))
+            quantity = int(row[2])
+            date_updated = datetime.strptime(row[3], '%m/%d/%Y').strftime('%Y-%m-%d')
+            dbhandler.add_product(name, price, quantity, date_updated)
+        
 
 def write_csv(products):
     """writes data to csv file"""
