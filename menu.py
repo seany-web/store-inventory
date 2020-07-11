@@ -39,7 +39,6 @@ def view_product():
         view_product()
     
 
-
 def add_product():
     """Add a new product to the database"""
     name = input("Please enter the product name: ")
