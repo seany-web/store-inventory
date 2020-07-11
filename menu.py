@@ -32,7 +32,12 @@ def menu_loop():
 
 def view_product():
     """View a single product's inventory"""
-    dbhandler.search_products(input("Enter an ID number: "))
+    try:
+        dbhandler.search_products(input("Please enter an ID number: "))
+    except ValueError:
+        print('Input is not valid.')
+        view_product()
+    
 
 
 def add_product():
