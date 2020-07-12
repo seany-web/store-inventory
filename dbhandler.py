@@ -32,7 +32,7 @@ def add_product(name, price, quantity, last_updated):
         last_updated_date_obj = datetime.datetime.strptime(
             last_updated, '%Y-%m-%d'
         ).date()
-        if last_updated_date_obj > product_record.date_updated:
+        if last_updated_date_obj >= product_record.date_updated:
             product_record.product_price = price
             product_record.product_quantity = quantity
             product_record.date_updated = last_updated

@@ -4,6 +4,7 @@ import os
 
 import dbhandler
 import csvhandler
+import validate
 
 
 def clear():
@@ -41,10 +42,10 @@ def view_product():
 
 def add_product():
     """Add a new product to the database"""
-    name = input("Please enter the product name: ")
-    quantity = int(input("Please enter the quantity: "))
-    price = input("Please enter the price: $")
-    formatted_price = int("".join(price.split('.')))
+    name = validate.validate_name()
+    quantity = validate.validate_quantity()
+    price = validate.validate_price()
+    formatted_price = int("".join(price.strip('$').split('.')))
     date = datetime.datetime.now().strftime('%Y-%m-%d')
     dbhandler.add_product(name, formatted_price, quantity, date)
     print('\nProduct has been added to the database!')
