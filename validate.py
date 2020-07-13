@@ -37,7 +37,7 @@ def validate_price():
     while True:
         price_format = '$1.99'
         price = input('Please enter the price in the following format {}: '.format(price_format))
-        if re.match('\$\d+.\d\d', price):
+        if re.fullmatch('\$\d+.\d\d', price):
             break
         else:
             print('Input does not match the requested format.\n')
